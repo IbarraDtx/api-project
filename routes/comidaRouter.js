@@ -3,6 +3,8 @@ const router = express.Router();
 const comidaController = require('../controllers/comidaController');
 const authMiddleware = require('../middleware/authMiddleware');
 
+router.get('/buscar', comidaController.obtenerComidaPorPropiedades);
+
 // Ruta para crear una nueva comida
 router.post('/', authMiddleware, comidaController.crearComida);
 

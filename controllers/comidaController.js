@@ -71,3 +71,24 @@ const Comida = require('../models/comida');
     }
   };
 
+  exports.obtenerComidaPorPropiedades = async (req, res) => {
+    try {
+      const query = {};
+      const { nombre, tipo, ingredientes, precio, descripcion, origen } = req.query;
+  
+      if (nombre) query.nombre = new RegExp(nombre, 'i'); 
+      if (tipo) query.tipo = new RegExp(tipo, 'i');
+      if (ingredientes) query.ingredientes = { $in: ingredientes.split(',').map(ing => new RegExp(ing, 'i')) };
+      if (precio) query.precio = precio;
+      if (descripcion) query.descripcion = new RegExp(descripcion, 'i');
+      if (origen) query.origen = new RegExp(origen, 'i');
+  
+      const comidas = await Comida.find(query);
+      if (comidas.length === 0) {
+        return res.status(404).json({ message: 'No se encontraron comidas' });
+      }
+      res.json(comidas);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
