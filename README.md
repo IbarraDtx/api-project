@@ -91,6 +91,25 @@ PUT - https://api-project-ugvk.onrender.com/api/comidas/:nombre
 Ruta para eliminar comida por nombre:
 DELETE - https://api-project-ugvk.onrender.com/api/comidas/:nombre
 
+# Buscar por nombre
+GET https://api-project-ugvk.onrender.com/api/comidas/buscar?nombre=NombreDeLaComida
+
+# Buscar por tipo
+GET https://api-project-ugvk.onrender.com/api/comidas/buscar?tipo=TipoDeComida
+
+# Buscar por ingredientes
+GET https://api-project-ugvk.onrender.com/api/comidas/buscar?ingredientes=Ingrediente1,Ingrediente2
+
+# Buscar por precio
+GET https://api-project-ugvk.onrender.com/api/comidas/buscar?precio=PrecioDeLaComida
+
+# Buscar por descripción
+GET https://api-project-ugvk.onrender.com/api/comidas/buscar?descripcion=DescripcionDeLaComida
+
+# Buscar por origen
+GET https://api-project-ugvk.onrender.com/api/comidas/buscar?origen=OrigenDeLaComida
+
+
 
 Autenticación
 La API utiliza JSON Web Tokens (JWT) para la autenticación. Para realizar operaciones protegidas, incluye el token JWT en el encabezado Authorization.
