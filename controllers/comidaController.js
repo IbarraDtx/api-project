@@ -38,7 +38,6 @@ const Comida = require('../models/comida');
     }
   };
 
-// Eliminar comida por cualquier propiedad
 exports.eliminarComidaPorPropiedad = async (req, res) => {
   try {
     const { propiedad, valor } = req.query;
@@ -48,7 +47,12 @@ exports.eliminarComidaPorPropiedad = async (req, res) => {
     }
 
     const query = {};
-    query[propiedad] = valor;
+
+    if (propiedad === 'precio') {
+      query[propiedad] = parseFloat(valor); 
+    } else {
+      query[propiedad] = valor; 
+    }
 
     const comida = await Comida.findOne(query);
     if (!comida) {
@@ -62,7 +66,6 @@ exports.eliminarComidaPorPropiedad = async (req, res) => {
   }
 };
 
-// Actualizar comida por cualquier propiedad
 exports.actualizarComidaPorPropiedad = async (req, res) => {
   try {
     const { propiedad, valor } = req.query;
@@ -79,7 +82,6 @@ exports.actualizarComidaPorPropiedad = async (req, res) => {
       return res.status(404).json({ message: 'Comida no encontrada' });
     }
 
-    // Actualizar propiedades de la comida si se proporcionan en el cuerpo de la solicitud
     if (req.body.nombre) comida.nombre = req.body.nombre.toLowerCase();
     if (req.body.tipo) comida.tipo = req.body.tipo;
     if (req.body.ingredientes) comida.ingredientes = req.body.ingredientes;
