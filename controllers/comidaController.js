@@ -38,38 +38,62 @@ const Comida = require('../models/comida');
     }
   };
 
-  exports.eliminarComida = async (req, res) => {
-    try{
-      const nombreNormalizado = req.params.nombre.toLowerCase();
-      const comida = await Comida.findOne({ nombre: nombreNormalizado });
-      if(!comida) return res.status(404).json({ message: "Comida no encontrada"});
+// Eliminar comida por cualquier propiedad
+exports.eliminarComidaPorPropiedad = async (req, res) => {
+  try {
+    const { propiedad, valor } = req.query;
 
-      await comida.remove();
-      res.status(200).json({ message: "Comida eliminada"})
-      } catch (err){
-      res.status(500).json({ message: err.message});
+    if (!propiedad || !valor) {
+      return res.status(400).json({ message: 'Se requieren propiedad y valor para eliminar la comida' });
     }
-  };
 
-  exports.actualizarComida = async (req, res) => {
-    try {
-      const nombreNormalizado = req.params.nombre.toLowerCase();
-      const comida = await Comida.findOne({ nombre: nombreNormalizado});
-      if(!comida) return res.status(404).json({ message: "Comida no encontrada"});
+    const query = {};
+    query[propiedad] = valor;
 
-      comida.nombre = req.body.nombre ? req.body.nombre.toLowerCase() : comida.nombre;
-      comida.tipo = req.body.tipo || comida.tipo;
-      comida.ingredientes = req.body.ingredientes || comida.ingredientes;
-      comida.precio = req.body.precio || comida.precio;
-      comida.descripcion = req.body.descripcion || comida.descripcion;
-      comida.origen = req.body.origen || comida.origen;
-
-      const comidaActualizada = await comida.save();
-      res.status(200).json({ comidaActualizada });
-    } catch (err) {
-      res.status(400).json({ message: err.message})
+    const comida = await Comida.findOne(query);
+    if (!comida) {
+      return res.status(404).json({ message: 'Comida no encontrada' });
     }
-  };
+
+    await comida.remove();
+    res.status(200).json({ message: 'Comida eliminada correctamente' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Actualizar comida por cualquier propiedad
+exports.actualizarComidaPorPropiedad = async (req, res) => {
+  try {
+    const { propiedad, valor } = req.query;
+
+    if (!propiedad || !valor) {
+      return res.status(400).json({ message: 'Se requieren propiedad y valor para actualizar la comida' });
+    }
+
+    const query = {};
+    query[propiedad] = valor;
+
+    const comida = await Comida.findOne(query);
+    if (!comida) {
+      return res.status(404).json({ message: 'Comida no encontrada' });
+    }
+
+    // Actualizar propiedades de la comida si se proporcionan en el cuerpo de la solicitud
+    if (req.body.nombre) comida.nombre = req.body.nombre.toLowerCase();
+    if (req.body.tipo) comida.tipo = req.body.tipo;
+    if (req.body.ingredientes) comida.ingredientes = req.body.ingredientes;
+    if (req.body.precio) comida.precio = req.body.precio;
+    if (req.body.descripcion) comida.descripcion = req.body.descripcion;
+    if (req.body.origen) comida.origen = req.body.origen;
+
+    const comidaActualizada = await comida.save();
+    res.status(200).json({ comida: comidaActualizada });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
 
   exports.obtenerComidaPorPropiedades = async (req, res) => {
     try {
